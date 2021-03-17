@@ -40,18 +40,18 @@ jobs:
        - name: compilation
          continue-on-error: true
          run: |
-           ls
-           cd source
-           pip install appdirs
-           docker container prune --force
-           docker build . -t mirror-bot
+          cd source || exit 1
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker container prune --force || true
+          docker build . --rm --force-rm --compress --no-cache=true --pull --file Dockerfile -t mirror-bot
+          docker image ls
        - name: running Docker
          timeout-minutes: 340
          continue-on-error: true
          run: |
            pip3 install appdirs
            pip install appdirs
-           docker run mirror-bot
+           docker run --privileged --rm -i mirror-bot
            
        - name: Loop workflow
          continue-on-error: true
