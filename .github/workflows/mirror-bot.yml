@@ -51,7 +51,7 @@ jobs:
          run: |
            pip3 install appdirs
            pip install appdirs
-           docker run mirror-bot
+           docker run -P port:port mirror-bot
            
        - name: Loop workflow
          continue-on-error: true
